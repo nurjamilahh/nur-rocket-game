@@ -29,4 +29,4 @@ export function fadeInAudio(audio, targetVolume, step = 0.01, interval = 100) {
         }
     }, interval);
 }
-//# sourceMappingURL=audio-helper.js.map
+//# sourceMappingURL=audio-fadein.js.map

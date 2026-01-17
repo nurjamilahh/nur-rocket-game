@@ -1,0 +1,226 @@
+import { fadeInAudio } from "./utils/audio-fadein.js";
+
+type Commander = {
+  name: string;
+  score: number;
+};
+
+const rocketConfig = {
+  canvasWidth: 400,
+  canvasHeight: 500,
+  playerSize: 40,
+  meteorSize: 35,
+  playerSpeed: 8,
+  initialMeteorSpeed: 3,
+  speedIncrement: 0.05,
+  meteorSpawnRate: 0.02,
+  storageKeys: {
+    leaderboard: "rocketLeaderboard",
+  },
+  fadeDuration: 1500,
+};
+
+class RocketGame {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+  private score: number = 0;
+  private isRunning: boolean = false;
+  private animationId: number = 0;
+  private nickname: string = "";
+
+  private playerX: number;
+  private meteors: { x: number; y: number; speed: number }[] = [];
+  private keys: { [key: string]: boolean } = {};
+
+  private gameMusic: HTMLAudioElement;
+  private musicToggle: HTMLButtonElement;
+  private musicIcon: HTMLElement;
+
+  constructor() {
+    this.canvas = document.getElementById("rocket-canvas") as HTMLCanvasElement;
+    this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.playerX = this.canvas.width / 2;
+
+    this.gameMusic = document.getElementById("gameMusic") as HTMLAudioElement;
+    this.musicToggle = document.getElementById(
+      "musicToggle",
+    ) as HTMLButtonElement;
+    this.musicIcon = document.getElementById("musicIcon") as HTMLElement;
+
+    this.initEventListeners();
+    this.renderLeaderboard();
+  }
+
+  private initEventListeners(): void {
+    window.addEventListener("keydown", (e) => (this.keys[e.code] = true));
+    window.addEventListener("keyup", (e) => (this.keys[e.code] = false));
+
+    document
+      .getElementById("start-rocket-btn")
+      ?.addEventListener("click", () => this.setupNickname());
+    document
+      .getElementById("start-round-btn")
+      ?.addEventListener("click", () => this.startGame());
+    document
+      .getElementById("play-again-rocket-btn")
+      ?.addEventListener("click", () => this.resetGame());
+
+    this.musicToggle.addEventListener("click", () => this.toggleMusic());
+  }
+
+  private setupNickname(): void {
+    const input = document.getElementById("nickname-input") as HTMLInputElement;
+    this.nickname = this.sanitize(input.value.trim()) || "Commander";
+
+    document.getElementById("nickname-setup")?.classList.add("hidden");
+    document.getElementById("rocket-instructions")?.classList.remove("hidden");
+
+    const display = document.getElementById("current-player-name");
+    if (display) display.textContent = this.nickname;
+  }
+
+  private startGame(): void {
+    document.getElementById("rocket-instructions")?.classList.add("hidden");
+    document.getElementById("game-display")?.classList.remove("hidden");
+
+    this.isRunning = true;
+    fadeInAudio(this.gameMusic, rocketConfig.fadeDuration);
+    this.musicIcon.className = "fas fa-volume-up";
+    this.gameLoop();
+  }
+
+  private toggleMusic(): void {
+    if (this.gameMusic.paused) {
+      this.gameMusic.play();
+      this.musicIcon.className = "fas fa-volume-up";
+    } else {
+      this.gameMusic.pause();
+      this.musicIcon.className = "fas fa-volume-mute";
+    }
+  }
+
+  private gameLoop = (): void => {
+    if (!this.isRunning) return;
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    if (this.keys["ArrowLeft"] && this.playerX > 25) {
+      this.playerX -= rocketConfig.playerSpeed;
+    }
+    if (this.keys["ArrowRight"] && this.playerX < this.canvas.width - 25) {
+      this.playerX += rocketConfig.playerSpeed;
+    }
+
+    if (Math.random() < rocketConfig.meteorSpawnRate) {
+      this.meteors.push({
+        x: Math.random() * (this.canvas.width - 40) + 20,
+        y: -40,
+        speed:
+          rocketConfig.initialMeteorSpeed +
+          this.score * rocketConfig.speedIncrement,
+      });
+    }
+
+    this.ctx.font = "40px serif";
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
+    this.ctx.fillText("🚀", this.playerX, this.canvas.height - 50);
+
+    for (let i = this.meteors.length - 1; i >= 0; i--) {
+      const m = this.meteors[i];
+      m.y += m.speed;
+
+      this.ctx.fillText("☄️", m.x, m.y);
+
+      const dx = this.playerX - m.x;
+      const dy = this.canvas.height - 50 - m.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 30) {
+        this.endGame();
+      }
+
+      if (m.y > this.canvas.height + 50) {
+        this.meteors.splice(i, 1);
+        this.score++;
+        const scoreEl = document.getElementById("rocket-score");
+        if (scoreEl) scoreEl.textContent = this.score.toString();
+      }
+    }
+
+    this.animationId = requestAnimationFrame(() => this.gameLoop());
+  };
+
+  private endGame(): void {
+    this.isRunning = false;
+    cancelAnimationFrame(this.animationId);
+    this.saveScore();
+
+    document.getElementById("game-display")?.classList.add("hidden");
+    const gameOverSection = document.getElementById("dodge-game-over");
+    if (gameOverSection) {
+      gameOverSection.classList.remove("hidden");
+      const title = gameOverSection.querySelector("h2");
+      if (title) title.style.color = "#ef4444";
+    }
+
+    const msg = document.getElementById("final-score-message");
+    if (msg) msg.textContent = `FINAL SCORE: ${this.score}`;
+  }
+
+  private resetGame(): void {
+    this.score = 0;
+    this.meteors = [];
+    this.playerX = this.canvas.width / 2;
+    const scoreEl = document.getElementById("rocket-score");
+    if (scoreEl) scoreEl.textContent = "0";
+
+    document.getElementById("dodge-game-over")?.classList.add("hidden");
+    this.startGame();
+  }
+
+  private saveScore(): void {
+    const scores: Commander[] = JSON.parse(
+      localStorage.getItem(rocketConfig.storageKeys.leaderboard) || "[]",
+    );
+    scores.push({ name: this.nickname, score: this.score });
+    scores.sort((a, b) => b.score - a.score);
+    localStorage.setItem(
+      rocketConfig.storageKeys.leaderboard,
+      JSON.stringify(scores.slice(0, 5)),
+    );
+    this.renderLeaderboard();
+  }
+
+  private renderLeaderboard(): void {
+    const list = document.getElementById("rocket-leaderboard-list");
+    if (!list) return;
+
+    const scores: Commander[] = JSON.parse(
+      localStorage.getItem(rocketConfig.storageKeys.leaderboard) || "[]",
+    );
+    const medals = ["🥇", "🥈", "🥉"];
+
+    list.innerHTML = scores
+      .map(
+        (s, i) => `
+            <li class="flex items-center justify-between p-2 border-b border-white/5">
+                <span>
+                    ${i < 3 ? medals[i] : `<span class="inline-block w-6 text-center mr-1">${i + 1}.</span>`} 
+                    ${this.sanitize(s.name)}
+                </span>
+                <span class="font-mono text-blue-400 font-bold">${s.score}</span>
+            </li>
+        `,
+      )
+      .join("");
+  }
+
+  private sanitize(str: string): string {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+}
+
+new RocketGame();

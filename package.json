@@ -1,0 +1,17 @@
+{
+  "name": "nur-rocket-game",
+  "version": "1.0.0",
+  "description": "Game Rocket Avoider by NurGame",
+  "main": "dist/rocket-logic.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": [],
+  "author": "NurGame",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}
