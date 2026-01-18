@@ -14,31 +14,34 @@
 - **Tailwind CSS v4**: Untuk desain antarmuka (UI) yang modern dan responsif.
 - **HTML5 Canvas/DOM**: Untuk rendering elemen game.
 
-## 📱 Fitur Mobile-Friendly
+## 📱 Mobile-Friendly Architecture
 
 Game ini telah dioptimalkan untuk perangkat seluler:
 
-- **On-Screen Controls**: Tersedia tombol navigasi panah di layar untuk memudahkan pemain mobile.
-- **Responsive Layout**: Antarmuka game (UI) akan menyesuaikan ukuran layar secara otomatis.
+- 🎮 **Smart Mobile Controls:** Menggunakan sistem simulasi virtual arrows yang memungkinkan pemain mobile memiliki kontrol presisi yang sama dengan pemain desktop tanpa mengubah inti logika mesin game.
+
+* **Responsive Layout:** Antarmuka game (UI) menggunakan Tailwind CSS v4 untuk penyesuaian otomatis di berbagai ukuran layar (HP, Tablet, hingga Desktop).
+
+* **Touch Optimization:** Implementasi e.preventDefault() pada kontrol layar sentuh untuk mencegah scrolling yang tidak disengaja saat bermain.
 
 ## 🛡️ Security & Safety Features
 
 Keamanan data pemain adalah prioritas dalam pengembangan game ini:
 
-- **XSS Protection (Sanitization):** Nama pilot yang dimasukkan melalui callsign telah melalui proses sanitization menggunakan fungsi this.sanitize(). Ini memastikan tidak ada kode berbahaya (script injection) yang bisa dijalankan melalui sistem leaderboard.
+- **XSS Protection (Sanitization):** Nama pilot yang dimasukkan melalui callsign telah melalui proses sanitization menggunakan fungsi `this.sanitize()`. Ini memastikan tidak ada kode berbahaya (script injection) yang bisa dijalankan melalui sistem leaderboard.
 
-- **Secure JSON Parsing:** Menggunakan blok JSON.parse dengan mekanisme fallback untuk mencegah aplikasi crash jika terjadi kerusakan format data pada Local Storage.
+- **Secure JSON Parsing:** Menggunakan blok `JSON.parse` dengan mekanisme fallback untuk mencegah aplikasi crash jika terjadi kerusakan format data pada Local Storage.
 
-- **Data Integrity:** Sistem secara otomatis memvalidasi dan membatasi jumlah data skor hanya untuk 5 pilot terbaik, menjaga penyimpanan browser tetap bersih dan efisien.
+- **Data Integrity:** Sistem secara otomatis memvalidasi dan membatasi jumlah data skor hanya untuk 5 pilot terbaik menggunakan metode `slice(0, 5)`, menjaga penyimpanan browser tetap bersih dan efisien.
 
 ## 📁 Struktur Project
 
-- `src/`: Berisi file sumber TypeScript (.ts).
-- `dist/`: Berisi file JavaScript (.js) hasil compile yang dijalankan di browser.
 - `audio/`: Efek suara dan musik latar game.
+- `dist/`: Berisi file JavaScript (.js) hasil compile yang dijalankan di browser.
 - `images/`: Aset grafis game.
+- `src/`: Berisi file sumber TypeScript (.ts).
 
-## 🚀 Cara Menjalankan Project di VS Code
+## 🚀 Cara Menuangkan Project di VS Code
 
 1. **Clone repository ini:**
 
