@@ -152,7 +152,15 @@ class RocketGame {
         const list = document.getElementById("rocket-leaderboard-list");
         if (!list)
             return;
-        const scores = JSON.parse(localStorage.getItem(rocketConfig.storageKeys.leaderboard) || "[]");
+        let scores = [];
+        try {
+            const rawData = localStorage.getItem(rocketConfig.storageKeys.leaderboard);
+            scores = JSON.parse(rawData || "[]");
+        }
+        catch (error) {
+            console.error("Format data leaderboard rusak:", error);
+            scores = [];
+        }
         const medals = ["🥇", "🥈", "🥉"];
         list.innerHTML = scores
             .map((s, i) => `

@@ -49,6 +49,47 @@ class RocketGame {
 
     this.initEventListeners();
     this.renderLeaderboard();
+
+    this.setupMobileControls();
+  }
+
+  private setupMobileControls(): void {
+    const btnLeft = document.getElementById("btn-left");
+    const btnRight = document.getElementById("btn-right");
+
+    if (!btnLeft || !btnRight) return;
+
+    const simulateKey = (keyCode: number, type: string) => {
+      window.dispatchEvent(
+        new KeyboardEvent(type, {
+          keyCode: keyCode,
+          which: keyCode,
+          // Menggunakan e.code sesuai dengan logika gameLoop kamu
+          code: keyCode === 37 ? "ArrowLeft" : "ArrowRight",
+          key: keyCode === 37 ? "ArrowLeft" : "ArrowRight",
+          bubbles: true,
+        }),
+      );
+    };
+
+    // Handler Touch untuk Mobile
+    btnLeft.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey(37, "keydown");
+    });
+    btnLeft.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey(37, "keyup");
+    });
+
+    btnRight.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      simulateKey(39, "keydown");
+    });
+    btnRight.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      simulateKey(39, "keyup");
+    });
   }
 
   private initEventListeners(): void {

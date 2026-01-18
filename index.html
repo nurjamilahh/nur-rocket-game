@@ -271,41 +271,6 @@
 
     <script type="module" src="dist/rocket-logic.js"></script>
 
-    <script>
-      window.addEventListener("load", () => {
-        const btnLeft = document.getElementById("btn-left");
-        const btnRight = document.getElementById("btn-right");
-
-        const simulateKey = (keyCode, type) => {
-          window.dispatchEvent(
-            new KeyboardEvent(type, {
-              keyCode: keyCode,
-              which: keyCode,
-              key: keyCode === 37 ? "ArrowLeft" : "ArrowRight",
-            }),
-          );
-        };
-
-        btnLeft.addEventListener("touchstart", (e) => {
-          e.preventDefault();
-          simulateKey(37, "keydown");
-        });
-        btnLeft.addEventListener("touchend", (e) => {
-          e.preventDefault();
-          simulateKey(37, "keyup");
-        });
-
-        btnRight.addEventListener("touchstart", (e) => {
-          e.preventDefault();
-          simulateKey(39, "keydown");
-        });
-        btnRight.addEventListener("touchend", (e) => {
-          e.preventDefault();
-          simulateKey(39, "keyup");
-        });
-      });
-    </script>
-
     <script
       src="https://kit.fontawesome.com/6ed6c077fc.js"
       crossorigin="anonymous"
