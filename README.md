@@ -4,7 +4,7 @@
 | :----------------------------------------: | :--------------------------------------: |
 | ![Desktop Version](images/preview-web.png) | ![Mobile Version](images/preview-hp.png) |
 
-**[MAIN SEKARANG (LIVE DEMO)](https://nurjamilahh.github.io/rocket-avoider-nurgame/)**
+**[MAIN SEKARANG (LIVE DEMO)](https://nur-jamilah-harahap.github.io/rocket-avoider-nurgame/)**
 
 **Rocket Avoider** adalah casual game yang mudah dimainkan dan untuk segala umur, kita hindari meteor dan raih skor tertinggi 🚀! Saya pakai bentuk meteor yang seperti lampu, supaya lebih terang 😃.  <br><br>
 Game ini adalah salah satu kenang-kenangan saya belajar software engineering di kelas. Kami ditugaskan memilih 3 (tiga) dari 4 (empat) game wajib dan ada satu game opsional. Dan ternyata inilah game yang paling saya sukai :smile:. Dulu, saya memangku anak-anak yang masih balita di depan "PC Jangkrik", seru menghindari meteor yang menghujani pesawat antariksa kami. Kini, saat menyusun barisan kodenya menggunakan TypeScript, saya sedang menanti kelahiran cucu kedua. Sebuah takdir yang unik dan menyenangkan! <br><br> Demi meningkatkan keamanan bermain, sudah saya tambahkan security code. Audio game: Retro Arcade Game Music dari HitsLab.  
@@ -45,7 +45,7 @@ Keamanan data pemain adalah prioritas dalam pengembangan game ini:
 1. **Clone repository ini:**
 
    ```bash
-   git clone [https://github.com/nurjamilahh/rocket-avoider-nurgame.git](https://github.com/nurjamilahh/rocket-avoider-nurgame.git)
+   git clone [https://github.com/nur-jamilah-harahap/rocket-avoider-nurgame.git](https://github.com/nur-jamilah-harahap/rocket-avoider-nurgame.git)
    ```
 
 2. **Instal dependensi:**
